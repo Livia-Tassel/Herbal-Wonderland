@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>本草拾遗 - 每日中药冷知识</title>
+    <style>
+        :root {
+            --paper: #F5F1E6;
+            --ink: #2E2E2E;
+            --vermilion: #C3272B;
+            --stone-blue: #1D5C8F;
+            --mugwort: #A8B8A1;
+            --mugwort-dark: #8A9D81;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            font-family: 'Source Han Serif CN', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                linear-gradient(90deg, transparent 98%, var(--mugwort) 100%),
+                linear-gradient(180deg, transparent 98%, var(--mugwort) 100%);
+            background-size: 30px 30px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            padding: 2rem;
+            background: var(--paper);
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--ink);
+        }
+
+        .herb-card {
+            position: relative;
+            padding: 2rem;
+            border: 2px solid var(--ink);
+            background: white;
+            transition: transform 0.3s;
+        }
+
+        .herb-card::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 2px solid var(--vermilion);
+            z-index: -1;
+        }
+
+        h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            color: var(--ink);
+            text-align: center;
+            margin: 0 0 2rem;
+            font-size: 2.5rem;
+        }
+
+        .fact {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .fact::before {
+            content: "🌿";
+            position: absolute;
+            left: -1.5rem;
+            top: -0.5rem;
+            font-size: 2rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            background: var(--stone-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button.history-btn {
+            background: var(--mugwort);
+        }
+
+        button.history-btn:hover {
+            background: var(--mugwort-dark);
+        }
+
+        button:hover {
+            background: var(--vermilion);
+            transform: translateY(-2px);
+        }
+
+        .history {
+            border-top: 2px dashed var(--ink);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            font-style: italic;
+            color: var(--stone-blue);
+        }
+
+        /* 历史足迹区域样式 */
+        .history-section {
+            margin-top: 2rem;
+            border-top: 2px dashed var(--ink);
+            padding-top: 1.5rem;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .history-section h3 {
+            text-align: center;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: var(--ink);
+            margin-top: 0;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0 1rem;
+            background: var(--paper);
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--mugwort);
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .history-list li {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--mugwort);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .history-list li:last-child {
+            border-bottom: none;
+        }
+
+        .history-list li:hover {
+            background-color: rgba(168, 184, 161, 0.1);
+        }
+
+        .history-list .date {
+            font-weight: bold;
+            color: var(--stone-blue);
+            min-width: 100px;
+        }
+
+        .history-list .herb-name {
+            flex-grow: 1;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .history-list .today {
+            color: var(--vermilion);
+            font-weight: bold;
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--stone-blue);
+            font-style: italic;
+            padding: 1rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .deco {
+            position: absolute;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="deco" style="top: -30px; left: -30px; animation: float 3s infinite;">🌿</div>
+        <div class="deco" style="bottom: -30px; right: -30px; animation: float 3s infinite 1s;">🍃</div>
+        
+        <h1>本草拾遗</h1>
+        <div class="herb-card" id="herbCard">
+            <!-- 内容由JavaScript动态生成 -->
+        </div>
+        
+        <div class="button-group">
+            <button onclick="loadNewHerb()">探索新知</button>
+            <button class="history-btn" onclick="toggleHistory()">查看历史</button>
+        </div>
+        
+        <div class="history-section" id="historySection">
+            <h3>历史足迹</h3>
+            <ul class="history-list" id="historyList">
+                <!-- 历史记录将在这里动态生成 -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 中药数据库（完整40味中药数据）
+        const herbs = [
+            {
+                name: "甘草",
+                fact: "中药界的『和事佬』，90%药方都带它玩，只因能调和诸药打架的暴脾气。",
+                science: "甘草酸具有类皮质激素样抗炎作用",
+                history: "《神农本草经》将其列为上品，称『坚筋骨，长肌肉』"
+            },
+            {
+                name: "黄连",
+                fact: "哑巴吃黄连时可能在偷着乐——毕竟它含天然抗菌剂，专治不服的细菌。",
+                science: "小檗碱可抑制多种肠道致病菌",
+                history: "《名医别录》记载治『热气目痛』"
+            },
+            {
+                name: "枸杞",
+                fact: "保温杯里的中年救星，实际是西域来的混血儿，唐朝才在中国扎根。",
+                science: "枸杞多糖可增强非特异性免疫功能",
+                history: "《本草纲目》称其『滋肾润肺，明目』"
+            },
+            {
+                name: "艾草",
+                fact: "端午限定款绿色蚊香，燃烧时散发的不是烟，是古人驱邪的执念。",
+                science: "桉叶素等挥发油具有神经镇静作用",
+                history: "《诗经》记载『彼采艾兮，一日不见』"
+            },
+            {
+                name: "何首乌",
+                fact: "熬夜冠军的自我修养：白天当药材，晚上偷偷变『夜交藤』开派对。",
+                science: "蒽醌类成分可促进黑色素生成",
+                history: "《开宝本草》记载『止心痛，益血气』"
+            },
+            {
+                name: "茯苓",
+                fact: "松树精的私房钱，专门藏在树根下长成白馒头状存折。",
+                science: "β-茯苓聚糖能增强巨噬细胞活性",
+                history: "《伤寒论》113方中有40方用茯苓"
+            },
+            {
+                name: "金银花",
+                fact: "双生花上演金银cosplay，开花24小时即完成土豪金到白银的变色魔法。",
+                science: "绿原酸可抑制流感病毒复制",
+                history: "《名医别录》称治『寒热身肿』"
+            },
+            {
+                name: "陈皮",
+                fact: "橘子皮界的陈年老腊肉，三年起步的晾晒是成为大佬的硬指标。",
+                science: "橙皮苷能降低毛细血管脆性",
+                history: "《本草纲目》『同补药则补，同泻药则泻』"
+            },
+            {
+                name: "蜈蚣",
+                fact: "百足之虫死而不僵，烘干后仍保持着妖娆的S型走位。",
+                science: "组织胺样物质可对抗惊厥",
+                history: "《神农本草经》列为下品"
+            },
+            {
+                name: "朱砂",
+                fact: "古代美妆博主挚爱的死亡色号，秦始皇陵里的流动水银河原料供应商。",
+                science: "硫化汞在300℃分解产生汞蒸气",
+                history: "《神农本草经》称『养精神，安魂魄』"
+            },
+            {
+                name: "决明子",
+                fact: "自带护眼屏保的种子，泡水后会膨胀成Q弹小果冻监视你喝水的进度。",
+                science: "大黄酚可增加肠蠕动",
+                history: "《本草正》称『清肝明目，利水通便』"
+            },
+            {
+                name: "蝉蜕",
+                fact: "昆虫界的金蝉脱壳限定皮肤，出土时间精确到秒的夏日限定款。",
+                science: "甲壳素可降低横纹肌紧张",
+                history: "《本草衍义》治『小儿夜啼』"
+            },
+            {
+                name: "三七",
+                fact: "云南白药里的保密咖，受伤的武侠高手都在偷偷嚼它的根。",
+                science: "三七皂苷可缩短凝血时间",
+                history: "《本草纲目拾遗》称『金不换』"
+            },
+            {
+                name: "阿胶",
+                fact: "驴皮熬制的上古胶原蛋白，杨贵妃的美容秘方其实是黑暗料理。",
+                science: "明胶蛋白含18种氨基酸",
+                history: "《水经注》记载『岁常煮胶以贡天府』"
+            },
+            {
+                name: "薄荷",
+                fact: "自带中央空调的清凉猛男，叶片越被揉虐散发的凉气越嚣张。",
+                science: "薄荷脑可激活冷觉感受器",
+                history: "《新修本草》称『主贼风伤寒』"
+            },
+            {
+                name: "龙眼肉",
+                fact: "水果界的伪装大师，晒干后变身中药材继续在药膳里当卧底。",
+                science: "葡萄糖可直接被心肌利用",
+                history: "《开宝本草》称『归脾而能益智』"
+            },
+            {
+                name: "冬虫夏草",
+                fact: "真菌绑架虫子的僵尸现场，海拔5000米的菌虫爱情悲剧。",
+                science: "虫草酸可能增强吞噬细胞功能",
+                history: "《本草从新》记载『保肺益肾』"
+            },
+            {
+                name: "乌梅",
+                fact: "青梅竹马熬成婆，烟熏火燎后修炼成酸度爆表的皱皮仙人。",
+                science: "枸橼酸可促进胆汁分泌",
+                history: "《本草经集注》称『除烦满，安心』"
+            },
+            {
+                name: "板蓝根",
+                fact: "非典时期的顶流明星，至今仍在各大药房C位出道。",
+                science: "靛蓝成分可能抑制病毒吸附",
+                history: "《日华子本草》称『治天行热毒』"
+            },
+            {
+                name: "枇杷叶",
+                fact: "自带密码锁的树叶，煎药前必须用刷子破解背面的绒毛密码。",
+                science: "苦杏仁苷可抑制呼吸中枢",
+                history: "《本草再新》称『清肺气，降肺火』"
+            },
+            {
+                name: "鱼腥草",
+                fact: "植物界的咸鱼本尊，揉碎叶片会散发来自东海的问候——浓郁鱼腥味。",
+                science: "癸酰乙醛具有广谱抗菌作用",
+                history: "《名医别录》记载治『蠼螋尿疮』"
+            },
+            {
+                name: "天麻",
+                fact: "终生不进行光合作用的摸鱼大师，全靠真菌外卖小哥送营养上门。",
+                science: "天麻素可降低脑血管阻力",
+                history: "《神农本草经》称『杀鬼精物，蛊毒恶气』"
+            },
+            {
+                name: "白芷",
+                fact: "自带十级磨皮美白滤镜，古代贵妇面膜里的C位成分。",
+                science: "白芷素可抑制酪氨酸酶活性",
+                history: "《本草纲目》记载『长肌肤，润泽颜色』"
+            },
+            {
+                name: "灵芝",
+                fact: "真菌界的千年老戏骨，秦汉时期就开始在神话故事里当道具。",
+                science: "灵芝多糖可激活T淋巴细胞",
+                history: "《神农本草经》列为『上上药』"
+            },
+            {
+                name: "红花",
+                fact: "藏在黄色花瓣里的红色特工，需要人工采撷才能解锁终极染色形态。",
+                science: "红花苷可改善心肌缺血",
+                history: "《本草纲目》称『活血润燥』"
+            },
+            {
+                name: "葛根",
+                fact: "深藏地下的淀粉银行，东汉灾荒时期曾担任临时国库储备粮。",
+                science: "葛根素可扩张冠状动脉",
+                history: "《伤寒论》葛根汤治项背强痛"
+            },
+            {
+                name: "杜仲",
+                fact: "树皮界的拉丝大师，折断后会表演藕断丝连的绝活。",
+                science: "杜仲胶可促进胶原蛋白合成",
+                history: "《神农本草经》称『补中益精气』"
+            },
+            {
+                name: "罗汉果",
+                fact: "葫芦娃家的甜味担当，1个果实的甜度相当于300g白糖却零卡路里。",
+                science: "罗汉果甜苷不参与糖代谢",
+                history: "《岭南采药录》记载治『咳嗽』"
+            },
+            {
+                name: "砂仁",
+                fact: "长在竹子根部的姜科卧底，晒干后依然保持刺客般的尖刺造型。",
+                science: "乙酸龙脑酯可促进胃液分泌",
+                history: "《药性论》称『主冷气腹痛』"
+            },
+            {
+                name: "槐花",
+                fact: "会下黄色蜜雪的中药，古代染坊VIP客户指定黄色染料供应商。",
+                science: "芦丁可增强毛细血管弹性",
+                history: "《日华子本草》称『治五痔』"
+            },
+            {
+                name: "蒲公英",
+                fact: "自带降落伞的种子空降兵，每朵绒球都藏着200+个特种兵。",
+                science: "蒲公英甾醇可促进胆汁分泌",
+                history: "《唐本草》称『主妇人乳痈肿』"
+            },
+            {
+                name: "石斛",
+                fact: "悬崖上的吊威亚演员，天生具备倒挂金钟生长的杂技天赋。",
+                science: "石斛碱可升高外周白细胞",
+                history: "《神农本草经》列为上品"
+            },
+            {
+                name: "酸枣仁",
+                fact: "失眠患者的数羊替代品，每颗果核都刻着安眠程序的源代码。",
+                science: "皂苷类成分可延长慢波睡眠",
+                history: "《金匮要略》酸枣仁汤方"
+            },
+            {
+                name: "鸡内金",
+                fact: "鸡的六块腹肌，专业粉碎各种石子沙粒的砂囊铠甲。",
+                science: "胃蛋白酶可促进消化吸收",
+                history: "《神农本草经》称『主泄利』"
+            },
+            {
+                name: "桑叶",
+                fact: "蚕宝宝御用米其林餐厅，经霜打后自动升级为降糖特供版。",
+                science: "脱氧野尻霉素抑制糖苷酶",
+                history: "《本草纲目》称『治劳热咳嗽』"
+            },
+            {
+                name: "地龙",
+                fact: "蚯蚓的医学进修班毕业证，烘干后依然保持妖娆的波浪线造型。",
+                science: "蚯蚓纤溶酶可溶解血栓",
+                history: "《本草纲目》称『性寒而下行』"
+            },
+            {
+                name: "薏苡仁",
+                fact: "会伪装修仙的粮食，在中药铺和杂粮店之间反复横跳。",
+                science: "薏苡仁酯可抑制骨骼肌收缩",
+                history: "《神农本草经》称『主筋急拘挛』"
+            },
+            {
+                name: "牛膝",
+                fact: "茎节处自带膝关节彩蛋，完美复刻牛膝盖的凹凸造型。",
+                science: "蜕皮甾酮可促进蛋白质合成",
+                history: "《神农本草经》称『主寒湿痿痹』"
+            },
+            {
+                name: "王不留行",
+                fact: "名字很霸气的麦蓝菜种子，实际是古代催乳界的扫地僧。",
+                science: "王不留行黄酮苷促泌乳",
+                history: "《本草纲目》『此物性走而不住』"
+            },
+            {
+                name: "马钱子",
+                fact: "自带毒药界爱马仕title，士的宁成分让007特工都忌惮三分。",
+                science: "番木鳖碱兴奋中枢神经",
+                history: "《本草纲目》称『治伤寒热病』"
+            }
+        ];
+
+        // 初始化本地存储
+        localStorage.getItem('viewedHerbs') || localStorage.setItem('viewedHerbs', JSON.stringify([]));
+        localStorage.getItem('herbHistory') || localStorage.setItem('herbHistory', JSON.stringify([]));
+
+        function loadNewHerb() {
+            const viewed = JSON.parse(localStorage.getItem('viewedHerbs'));
+            const availableHerbs = herbs.filter(herb => !viewed.includes(herb.name));
+            
+            if (availableHerbs.length === 0) {
+                localStorage.setItem('viewedHerbs', JSON.stringify([]));
+                return loadNewHerb();
+            }
+
+            const herb = availableHerbs[Math.floor(Math.random() * availableHerbs.length)];
+            viewed.push(herb.name);
+            localStorage.setItem('viewedHerbs', JSON.stringify(viewed));
+            
+            // 记录历史
+            recordHistory(herb.name);
+            renderHerb(herb);
+        }
+
+        function recordHistory(herbName) {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD格式
+            let history = JSON.parse(localStorage.getItem('herbHistory'));
+            
+            // 过滤掉今天之前的记录，保留最近7天
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            
+            history = history.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return entryDate >= sevenDaysAgo;
+            });
+            
+            // 更新或添加今天的记录
+            const todayEntryIndex = history.findIndex(entry => entry.date === today);
+            if (todayEntryIndex !== -1) {
+                history[todayEntryIndex].herb = herbName;
+            } else {
+                history.push({ date: today, herb: herbName });
+            }
+            
+            // 按日期倒序排序
+            history.sort((a, b) => b.date.localeCompare(a.date));
+            
+            localStorage.setItem('herbHistory', JSON.stringify(history));
+        }
+
+        function renderHerb(herb) {
+            const card = document.getElementById('herbCard');
+            card.innerHTML = `
+                <h2>${herb.name}</h2>
+                <p class="fact">${herb.fact}</p>
+                <div class="history">
+                    <strong>📜 典籍记载：</strong>${herb.history}
+                </div>
+                <div class="science">
+                    <strong>🔬 科学解析：</strong>${herb.science}
+                </div>
+            `;
+            
+            // 添加动画效果
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = 1;
+            }, 100);
+        }
+
+        function toggleHistory() {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+            
+            if (section.style.display === 'block') {
+                section.style.display = 'none';
+            } else {
+                renderHistoryList();
+                section.style.display = 'block';
+            }
+        }
+
+        function renderHistoryList() {
+            const list = document.getElementById('historyList');
+            let history = JSON.parse(localStorage.getItem('herbHistory') || []);
+            const today = new Date().toISOString().split('T')[0];
+            
+            list.innerHTML = '';
+            
+            if (history.length === 0) {
+                list.innerHTML = '<div class="no-history">暂无学习记录</div>';
+                return;
+            }
+            
+            // 确保今天有记录
+            const todayEntry = history.find(entry => entry.date === today);
+            if (!todayEntry) {
+                history.unshift({ date: today, herb: '今日尚未学习' });
+            }
+            
+            // 限制只显示最近7天的记录
+            history = history.slice(0, 7);
+            
+            history.forEach(entry => {
+                const li = document.createElement('li');
+                const isToday = entry.date === today;
+                const herbText = entry.herb === '今日尚未学习' ? 
+                    `<span class="today">${entry.herb}</span>` : 
+                    `学习了<span class="herb-name">${entry.herb}</span>`;
+                
+                li.innerHTML = `
+                    <span class="date">${formatDate(entry.date, isToday)}</span>
+                    ${herbText}
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function formatDate(dateString, isToday = false) {
+            const date = new Date(dateString);
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (dateString === today) {
+                return '<span class="today">今日</span>';
+            } else if (dateString === yesterdayStr) {
+                return '昨日';
+            } else {
+                return dateString;
+            }
+        }
+
+        // 首次加载
+        loadNewHerb();
+    </script>
+</body>
+</html>
