@@ -3,152 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>草药仙踪</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .img-background {
-            width: 95%;
-            display: flex;
-            margin-top: 74px;
-            height: auto;
-            z-index: 1;
-        }
-
-        .button {
-            width: 110px;
-            height: 110px;
-            background: #626E85;
-            box-shadow: 0px 0px 35px 0px #FFFFFF;
-            border-radius: 55px 55px 55px 55px;
-            color: white;
-            border: 0px solid transparent;
-            font-size: 32px;
-            position: absolute;
-            top: 384px;
-            z-index: 99;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #4a5063;
-        }
-
-        .color-blocks {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-            z-index: 999;
-        }
-
-        .color-block {
-            cursor: pointer;
-            width: 60px;
-            height: 170px;
-            background: #626E85;
-            border-radius: 0px;
-            border: 8px solid #B2C5C5;
-            box-shadow: 0px 0px 15px 0px #FFFFFF;
-            display: flex;
-            font-size: 24px;
-            color: white;
-            transition: all 0.3s ease;
-            position: absolute;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .color-block:hover {
-            background-color: #4a5063;
-        }
-
-        #block1 {
-            top: 138px;
-            left: 450px;
-            z-index: 999;
-        }
-
-        #block2 {
-            top: 352px;
-            left: 750px;
-            z-index: 999;
-        }
-
-        #block3 {
-            top: 229px;
-            left: 1050px;
-            z-index: 999;
-        }
-
-        #block4 {
-            top: 166px;
-            left: 1350px;
-            z-index: 999;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }        
-        
-        .container {
-            height: 50px;
-            width: 600px;
-            display: flex;
-            align-items: center;
-            background-color: #B2C5C5;
-            position: absolute;
-            right: 38px;
-            top: 33px;
-            z-index: 999;
-        }
-
-        .text-area {
-            flex: 1;
-            margin-right: 5px;
-            margin-left: 5px;
-            color: white;
-            font-size: 20px;
-        }
-
-        .button-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 50px;
-            width: 84px;
-            background-color: #384800;
-            z-index: 999;
-        }
-
-        .button-test {
-            width: 68px;
-            height: 36px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #626E85;
-            box-shadow: 0px 0px 3px 0px #FFFFFF;
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .button-test:hover {
-            background-color: grey;
-        }
-
-    </style>
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
@@ -160,24 +15,18 @@
             <a href="Herbal_Remedy_Personality.html" class="button-test">测试</a>
         </div>
     </div>
-    <img src="..\assets\0-home\Pic-background.png" alt="Error" class="img-background">
+    <img src="../assets/0-home/Pic-background.png" alt="Error" class="img-background">
 
-    <a href="home.html"><img src="..\assets\res-public\Button-backhome.png" class="home-button" style="top:33px;left:38px"></a>
+    <a href="home.html"><img src="../assets/res-public/Button-backhome.png" class="home-button"></a>
 
-    <button id="startButton" class="button">查看</button>
-    <div id="colorBlocks" class="color-blocks">
-        <a href="1-mys.html"><button class="color-block" id="block1">神秘故事</button></a>
-        <a href="2-herb.html"><button class="color-block" id="block2">草药探寻</button></a>
-        <a href="3-interact.html"><button class="color-block" id="block3">趣味互动</button></a>
-        <a href="4-soul.html"><button class="color-block" id="block4">草药仙灵</button></a>
+    <div class="main-content">
+        <button id="startButton" class="button">查看</button>
+        <div id="colorBlocks" class="color-blocks">
+            <a href="1-mys.html" class="color-block">神秘故事</a>
+            <a href="2-herb.html" class="color-block">草药探寻</a>
+            <a href="3-interact.html" class="color-block">趣味互动</a>
+            <a href="4-soul.html" class="color-block">草药仙灵</a>
+        </div>
     </div>
-    <script>
-        document.getElementById('startButton').addEventListener('click', function () {
-            this.style.display = 'none';
-            var blocks = document.getElementById('colorBlocks');
-            blocks.style.visibility = 'visible';
-            blocks.style.opacity = '1';
-        });
-    </script>
-    
+    <script src="js/home.js"></script>
 </body>
