@@ -1,0 +1,15 @@
+.title-container {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.title-container h1 {
+    color: white;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px #000000;
+}
